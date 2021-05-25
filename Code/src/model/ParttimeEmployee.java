@@ -6,7 +6,7 @@
 package model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.sql.Date;
 
 /**
  *
@@ -18,7 +18,7 @@ public class ParttimeEmployee extends Employee implements Serializable{
     public ParttimeEmployee() {
     }
 
-    public ParttimeEmployee(double hourlyWages, int id, String name, String phoneNumber, String address, LocalDate dateOfBirth, String gender, String email) {
+    public ParttimeEmployee(double hourlyWages, int id, String name, String phoneNumber, String address, Date dateOfBirth, String gender, String email) {
         super(id, name, phoneNumber, address, dateOfBirth, gender, email);
         this.hourlyWages = hourlyWages;
     }

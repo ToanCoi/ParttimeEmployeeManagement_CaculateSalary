@@ -6,7 +6,7 @@
 package model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.sql.Date;
 /**
  *
  * @author nguye
@@ -16,14 +16,14 @@ public class Employee implements Serializable {
     private String name;
     private String phoneNumber;
     private String address;
-    private LocalDate dateOfBirth;
+    private Date dateOfBirth;
     private String gender;
     private String email;
 
     public Employee() {
     }
 
-    public Employee(int id, String name, String phoneNumber, String address, LocalDate dateOfBirth, String gender, String email) {
+    public Employee(int id, String name, String phoneNumber, String address, Date dateOfBirth, String gender, String email) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -49,7 +49,7 @@ public class Employee implements Serializable {
         return address;
     }
 
-    public LocalDate getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
@@ -77,7 +77,7 @@ public class Employee implements Serializable {
         this.address = address;
     }
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

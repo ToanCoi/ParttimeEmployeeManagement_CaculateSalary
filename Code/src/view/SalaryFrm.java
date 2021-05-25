@@ -5,17 +5,61 @@
  */
 package view;
 
+import dao.SalaryDAO;
+import exception.InvalidDateFormatException;
+import exception.InvalidDayOfWeekException;
+import exception.NoEmployeeException;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
+import model.Manager;
+import java.sql.*;
+import java.util.ArrayList;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
+import model.Employee;
+import model.Salary;
+
 /**
  *
  * @author nguye
  */
 public class SalaryFrm extends javax.swing.JFrame {
 
+    private Manager manager;
+    private DefaultTableModel model;
+    private ArrayList<Salary> listSalary;
+    private SalaryFrm mainFrm;
+
     /**
      * Creates new form TinhCongFrame
      */
-    public SalaryFrm() {
+    public SalaryFrm(Manager m) {
         initComponents();
+        this.setLocationRelativeTo(null);
+        this.lblName.setText(m.getName());
+        model = (DefaultTableModel) tblSalary.getModel();
+        tblSalary.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblSalary.setDefaultEditor(Object.class, null);
+
+        this.manager = m;
+        mainFrm = this;
+        
+
+        tblSalary.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                JTable table = (JTable) mouseEvent.getSource();
+                Point point = mouseEvent.getPoint();
+                int row = table.rowAtPoint(point);
+                if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+                    mainFrm.dispose();
+                    new DetailSalaryFrm(manager, listSalary.get(row)).setVisible(true);
+                }
+            }
+        });
     }
 
     /**
@@ -31,18 +75,18 @@ public class SalaryFrm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
+        lblName = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
-        jButton7 = new javax.swing.JButton();
+        btnReturn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtStartTime = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtEndTime = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
-        updateCustomerButton = new javax.swing.JButton();
+        btnConfirm = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblSalary = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAutoRequestFocus(false);
@@ -60,23 +104,24 @@ public class SalaryFrm extends javax.swing.JFrame {
 
         jLabel2.setIcon(new javax.swing.ImageIcon("D:\\OneDrive - ptit.edu.vn\\3nd year - 1st semester\\OOP\\SanPham_NhomBt8_NhomHoc6\\SupermarketManagement\\images\\cnpm\\Calculate_Salary_Icon.png")); // NOI18N
 
-        jLabel12.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(51, 204, 0));
-        jLabel12.setText("Manager");
+        lblName.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblName.setForeground(new java.awt.Color(51, 204, 0));
+        lblName.setText("Anh");
 
         jLabel14.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(51, 204, 0));
         jLabel14.setText("Tuần này");
 
-        jButton7.setBackground(new java.awt.Color(0, 0, 153));
-        jButton7.setFont(new java.awt.Font("Tahoma", 3, 12)); // NOI18N
-        jButton7.setForeground(new java.awt.Color(51, 204, 0));
-        jButton7.setText("Trờ về");
-        jButton7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton7.setPreferredSize(new java.awt.Dimension(60, 60));
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        btnReturn.setBackground(new java.awt.Color(0, 0, 153));
+        btnReturn.setFont(new java.awt.Font("Tahoma", 3, 12)); // NOI18N
+        btnReturn.setForeground(new java.awt.Color(51, 204, 0));
+        btnReturn.setText("Trờ về");
+        btnReturn.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnReturn.setFocusPainted(false);
+        btnReturn.setPreferredSize(new java.awt.Dimension(60, 60));
+        btnReturn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                btnReturnActionPerformed(evt);
             }
         });
 
@@ -88,25 +133,25 @@ public class SalaryFrm extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(36, 36, 36)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel14)
-                                .addComponent(jLabel11))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel14)
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(45, 45, 45)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(37, Short.MAX_VALUE))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(67, 67, 67)
+                        .addComponent(lblName)))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel12)
+                .addComponent(lblName)
                 .addGap(75, 75, 75)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -114,7 +159,7 @@ public class SalaryFrm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel14)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 197, Short.MAX_VALUE)
-                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(btnReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         getContentPane().add(jPanel1);
@@ -125,9 +170,9 @@ public class SalaryFrm extends javax.swing.JFrame {
         jLabel13.setForeground(new java.awt.Color(0, 0, 153));
         jLabel13.setText("Hệ thống quản lý nhân viên parttime");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txtStartTime.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txtStartTimeActionPerformed(evt);
             }
         });
 
@@ -135,9 +180,9 @@ public class SalaryFrm extends javax.swing.JFrame {
         jLabel15.setForeground(new java.awt.Color(0, 0, 153));
         jLabel15.setText("Ngày bắt đầu - kết thúc:");
 
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        txtEndTime.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                txtEndTimeActionPerformed(evt);
             }
         });
 
@@ -145,30 +190,26 @@ public class SalaryFrm extends javax.swing.JFrame {
         jLabel16.setForeground(new java.awt.Color(0, 0, 153));
         jLabel16.setText("-");
 
-        updateCustomerButton.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        updateCustomerButton.setForeground(new java.awt.Color(0, 0, 153));
-        updateCustomerButton.setText("Xác nhận");
-        updateCustomerButton.addActionListener(new java.awt.event.ActionListener() {
+        btnConfirm.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnConfirm.setForeground(new java.awt.Color(0, 0, 153));
+        btnConfirm.setText("Xác nhận");
+        btnConfirm.setFocusPainted(false);
+        btnConfirm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateCustomerButtonActionPerformed(evt);
+                btnConfirmActionPerformed(evt);
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblSalary.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"1", "1", "B", "0123456633", "12", "240000", "0", "0", "0", "0", "100000", "0", "340000", ""},
-                {"2", "2", "C", "0493983942", "8", "220000", "0", "0", "0", "0", "150000", "0", "350000", null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "Stt", "Mã", "Tên", "SĐT", "Số giờ làm trong ca", "Tổng tiền trong ca", "Tổng giờ ngoài ca", "Tổng tiền ngoài ca", "Số giờ đi muộn", "Tổng tiền bị phạt", "Trợ cấp", "Thưởng", "Tổng tiền thực nhận", "Thanh toán"
+                "Mã", "Tên", "SĐT", "Số giờ làm trong ca", "Tổng tiền trong ca", "Tổng giờ ngoài ca", "Tổng tiền ngoài ca", "Số giờ đi muộn", "Tổng tiền bị phạt", "Trợ cấp", "Thưởng", "Tổng tiền thực nhận", "Thanh toán"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        tblSalary.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jScrollPane1.setViewportView(tblSalary);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -181,14 +222,14 @@ public class SalaryFrm extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel13)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel16)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(updateCustomerButton)))
-                .addContainerGap(161, Short.MAX_VALUE))
+                        .addComponent(btnConfirm)))
+                .addContainerGap(160, Short.MAX_VALUE))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanel2Layout.setVerticalGroup(
@@ -197,14 +238,13 @@ public class SalaryFrm extends javax.swing.JFrame {
                 .addComponent(jLabel13)
                 .addGap(41, 41, 41)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel15)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel16)
-                    .addComponent(updateCustomerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(46, 46, 46)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(285, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2);
@@ -212,65 +252,83 @@ public class SalaryFrm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    private void btnReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReturnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
+        new ManagerHomeFrm(manager).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnReturnActionPerformed
 
-    private void updateCustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateCustomerButtonActionPerformed
-
-    }//GEN-LAST:event_updateCustomerButtonActionPerformed
-
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+            String startDate = this.format(txtStartTime.getText());
+            String endDate = this.format(txtEndTime.getText());
+            String regex = "([0-9][0-9])?[0-9][0-9]-(0[0-9]||1[0-2])-([0-2][0-9]||3[0-1])";
+            if (!startDate.matches(regex)) {
+                throw new InvalidDateFormatException("Ngày bắt đầu không hợp lệ");
+            }
+            if (!endDate.matches(regex)) {
+                throw new InvalidDateFormatException("Ngày kết thúc không hợp lệ");
+            }
+
+            Date start = Date.valueOf(startDate);
+            Date end = Date.valueOf(endDate);
+            if(!(end.getDay() - start.getDay() <= 6 && end.getDay() - start.getDay() >= 0) || !(end.getDate() - start.getDate() >= 0 && end.getDate() - start.getDate() <= 6))
+                throw new InvalidDayOfWeekException("Ngày bắt đầu và kết thúc không cùng trong 1 tuần!");
+
+            SalaryDAO sd = new SalaryDAO();
+            listSalary = sd.searchSalary(manager, start, end);
+            
+            if(listSalary.isEmpty())
+                throw new NoEmployeeException("Không có nhân viên làm việc trong khoảng thời gian đã nhập");
+
+            for (Salary salary : listSalary) {
+                if (salary.getListWorkedShift().size() > 0) {
+                    Employee employee = salary.getListWorkedShift().get(0).getEmployee();
+                    String paid = "";
+                    if (salary.isPaid()) {
+                        paid = "x";
+                    }
+                    model.addRow(new Object[]{employee.getId(), employee.getName(), employee.getPhoneNumber(), salary.getSumHourInShift(),
+                        salary.getSumInShiftSalary(), salary.getSumHourOutShift(), salary.getSumOutShiftSalary(), salary.getSumLateTime(),
+                        salary.getSumLateFee(), salary.getAllowance(), salary.getBonus(), salary.getRealSalary(), paid});
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(SalaryFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(SalaryFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(SalaryFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(SalaryFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InvalidDateFormatException | InvalidDayOfWeekException | NoEmployeeException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+            txtStartTime.requestFocus();
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+    }//GEN-LAST:event_btnConfirmActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new SalaryFrm().setVisible(true);
-            }
-        });
+    private String format(String date) throws InvalidDateFormatException {
+        String s[] = date.split("[-/]+");
+        if (s.length != 3) {
+            throw new InvalidDateFormatException("Định dạng ngày " + date + " không hợp lệ");
+        }
+        if (s[0].length() < 2) {
+            s[0] = "0" + s[0];
+        }
+        if (s[1].length() < 2) {
+            s[1] = "0" + s[1];
+        }
+        while (s[2].length() < 4) {
+            s[2] = "0" + s[2];
+        }
+        return s[2] + "-" + s[1] + "-" + s[0];
     }
+    private void txtEndTimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEndTimeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEndTimeActionPerformed
+
+    private void txtStartTimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtStartTimeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtStartTimeActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton7;
+    private javax.swing.JButton btnConfirm;
+    private javax.swing.JButton btnReturn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
@@ -279,9 +337,9 @@ public class SalaryFrm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JButton updateCustomerButton;
+    private javax.swing.JLabel lblName;
+    private javax.swing.JTable tblSalary;
+    private javax.swing.JTextField txtEndTime;
+    private javax.swing.JTextField txtStartTime;
     // End of variables declaration//GEN-END:variables
 }

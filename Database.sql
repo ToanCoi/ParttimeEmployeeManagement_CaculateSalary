@@ -13,7 +13,7 @@ create table tblEmployee(
 
 alter table tblemployee auto_increment = 100;
 
-create table tblManger(
+create table tblManager(
 	id int,
     username varchar(30) not null,
     password varchar(30) not null,
@@ -28,7 +28,7 @@ create table tblSalary(
     paid bit not null,
     tblManagerid int not null,
     primary key (id),
-    foreign key (tblManagerid) references tblmanger(id)
+    foreign key (tblManagerid) references tblmanager(id)
 );
 
 create table tblParttimeEmployee(

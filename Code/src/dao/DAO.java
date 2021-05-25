@@ -18,12 +18,11 @@ public class DAO {
     public DAO() {
         if(connection == null) {
             String url = "jdbc:mysql://localhost:3306/se_2021";
-            String username = "root";
-            String password = "Toancoia2";
+            String username = "";
+            String password = "";
             try {
-                Class.forName("com.mysql.jdbc.Driver");
+                Class.forName("com.mysql.cj.jdbc.Driver");
                 connection = DriverManager.getConnection(url, username, password);
-                System.out.println("success");
             } catch(Exception e) {
                 e.printStackTrace();
             }

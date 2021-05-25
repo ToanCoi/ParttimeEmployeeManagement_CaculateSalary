@@ -5,6 +5,10 @@
  */
 package view;
 
+import dao.ManagerDAO;
+import javax.swing.JOptionPane;
+import model.Manager;
+
 /**
  *
  * @author os
@@ -118,6 +122,7 @@ public class LoginFrm extends javax.swing.JFrame {
         loginButton.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         loginButton.setForeground(new java.awt.Color(255, 255, 255));
         loginButton.setText("Đăng nhập");
+        loginButton.setFocusPainted(false);
         loginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loginButtonActionPerformed(evt);
@@ -178,7 +183,18 @@ public class LoginFrm extends javax.swing.JFrame {
     }//GEN-LAST:event_usernameFieldActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
-
+        Manager manager = new Manager();
+        manager.setUsername(usernameField.getText());
+        manager.setPassword(String.copyValueOf(passwordField.getPassword()));
+        
+        ManagerDAO md = new ManagerDAO();
+        if(md.checkLogin(manager)) {
+            
+            new ManagerHomeFrm(manager).setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Username và/hoặc password không hợp lệ!");
+        }
     }//GEN-LAST:event_loginButtonActionPerformed
 
 

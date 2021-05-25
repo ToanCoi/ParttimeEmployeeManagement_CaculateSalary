@@ -5,17 +5,36 @@
  */
 package view;
 
+import dao.SalaryDAO;
+import exception.PaidException;
+import javax.swing.JOptionPane;
+import model.Manager;
+import model.Salary;
+
 /**
  *
  * @author nguye
  */
 public class ConfirmFrm extends javax.swing.JFrame {
 
+    private Manager manager;
+    private Salary salary;
     /**
      * Creates new form ConfirmFrm
      */
-    public ConfirmFrm() {
+    public ConfirmFrm(Manager m, Salary s) {
         initComponents();
+        this.setLocationRelativeTo(null);
+        lblEmployee.setText("Nhân viên: " + s.getListWorkedShift().get(0).getEmployee().getName());
+        lblInShiftSalary.setText("Số tiền trong ca: " + s.getSumInShiftSalary());
+        lblOutShiftSalary.setText("Số tiền thừa ca: " + s.getSumOutShiftSalary());
+        lblBonus.setText("Tiền thưởng: " + s.getBonus());
+        lblLateFee.setText("Tiền phạt: " + s.getSumLateFee());
+        lblAllowance.setText("Trợ cấp: " + s.getAllowance());
+        lblRealSalary.setText("Thực nhận: " + s.getRealSalary());
+        
+        this.salary = s;
+        this.manager = m;
     }
 
     /**
@@ -29,15 +48,15 @@ public class ConfirmFrm extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
-        jLabel18 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
-        updateCustomerButton = new javax.swing.JButton();
-        updateCustomerButton1 = new javax.swing.JButton();
-        jLabel21 = new javax.swing.JLabel();
+        lblEmployee = new javax.swing.JLabel();
+        lblInShiftSalary = new javax.swing.JLabel();
+        lblOutShiftSalary = new javax.swing.JLabel();
+        lblBonus = new javax.swing.JLabel();
+        lblRealSalary = new javax.swing.JLabel();
+        lblAllowance = new javax.swing.JLabel();
+        btnConfirm = new javax.swing.JButton();
+        btnReturn = new javax.swing.JButton();
+        lblLateFee = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -47,51 +66,51 @@ public class ConfirmFrm extends javax.swing.JFrame {
         jLabel13.setForeground(new java.awt.Color(0, 153, 0));
         jLabel13.setText("Xác nhận thanh toán?");
 
-        jLabel15.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel15.setForeground(new java.awt.Color(0, 0, 153));
-        jLabel15.setText("Nhân viên:");
+        lblEmployee.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        lblEmployee.setForeground(new java.awt.Color(0, 0, 153));
+        lblEmployee.setText("Nhân viên:");
 
-        jLabel16.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel16.setForeground(new java.awt.Color(0, 0, 153));
-        jLabel16.setText("Số tiền trong ca:");
+        lblInShiftSalary.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        lblInShiftSalary.setForeground(new java.awt.Color(0, 0, 153));
+        lblInShiftSalary.setText("Số tiền trong ca:");
 
-        jLabel17.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel17.setForeground(new java.awt.Color(0, 0, 153));
-        jLabel17.setText("Số tiền thừa ca:");
+        lblOutShiftSalary.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        lblOutShiftSalary.setForeground(new java.awt.Color(0, 0, 153));
+        lblOutShiftSalary.setText("Số tiền thừa ca:");
 
-        jLabel18.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel18.setForeground(new java.awt.Color(0, 0, 153));
-        jLabel18.setText("Tiền thưởng:");
+        lblBonus.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        lblBonus.setForeground(new java.awt.Color(0, 0, 153));
+        lblBonus.setText("Tiền thưởng:");
 
-        jLabel19.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel19.setForeground(new java.awt.Color(0, 0, 153));
-        jLabel19.setText("Thực nhận:");
+        lblRealSalary.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        lblRealSalary.setForeground(new java.awt.Color(0, 0, 153));
+        lblRealSalary.setText("Thực nhận:");
 
-        jLabel20.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel20.setForeground(new java.awt.Color(0, 0, 153));
-        jLabel20.setText("Trợ cấp:");
+        lblAllowance.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        lblAllowance.setForeground(new java.awt.Color(0, 0, 153));
+        lblAllowance.setText("Trợ cấp:");
 
-        updateCustomerButton.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        updateCustomerButton.setForeground(new java.awt.Color(0, 0, 153));
-        updateCustomerButton.setText("Xác nhận");
-        updateCustomerButton.addActionListener(new java.awt.event.ActionListener() {
+        btnConfirm.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnConfirm.setForeground(new java.awt.Color(0, 0, 153));
+        btnConfirm.setText("Xác nhận");
+        btnConfirm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateCustomerButtonActionPerformed(evt);
+                btnConfirmActionPerformed(evt);
             }
         });
 
-        updateCustomerButton1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        updateCustomerButton1.setForeground(new java.awt.Color(0, 0, 153));
-        updateCustomerButton1.setText("Hủy");
-        updateCustomerButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnReturn.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnReturn.setForeground(new java.awt.Color(0, 0, 153));
+        btnReturn.setText("Hủy");
+        btnReturn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateCustomerButton1ActionPerformed(evt);
+                btnReturnActionPerformed(evt);
             }
         });
 
-        jLabel21.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel21.setForeground(new java.awt.Color(0, 0, 153));
-        jLabel21.setText("Tiền phạt:");
+        lblLateFee.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        lblLateFee.setForeground(new java.awt.Color(0, 0, 153));
+        lblLateFee.setText("Tiền phạt:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -105,19 +124,19 @@ public class ConfirmFrm extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(35, 35, 35)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel16)
-                            .addComponent(jLabel15)
-                            .addComponent(jLabel18)
-                            .addComponent(jLabel19)
-                            .addComponent(jLabel17)
-                            .addComponent(jLabel20)
-                            .addComponent(jLabel21))))
+                            .addComponent(lblInShiftSalary)
+                            .addComponent(lblEmployee)
+                            .addComponent(lblBonus)
+                            .addComponent(lblRealSalary)
+                            .addComponent(lblOutShiftSalary)
+                            .addComponent(lblAllowance)
+                            .addComponent(lblLateFee))))
                 .addContainerGap(193, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(79, 79, 79)
-                .addComponent(updateCustomerButton1)
+                .addComponent(btnReturn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(updateCustomerButton)
+                .addComponent(btnConfirm)
                 .addGap(143, 143, 143))
         );
         jPanel1Layout.setVerticalGroup(
@@ -126,23 +145,23 @@ public class ConfirmFrm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel13)
                 .addGap(4, 4, 4)
-                .addComponent(jLabel15)
+                .addComponent(lblEmployee)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel16)
+                .addComponent(lblInShiftSalary)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel17)
+                .addComponent(lblOutShiftSalary)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel18)
+                .addComponent(lblBonus)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel21)
+                .addComponent(lblLateFee)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel20)
+                .addComponent(lblAllowance)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel19)
+                .addComponent(lblRealSalary)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(updateCustomerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(updateCustomerButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31))
         );
 
@@ -160,61 +179,39 @@ public class ConfirmFrm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void updateCustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateCustomerButtonActionPerformed
-
-    }//GEN-LAST:event_updateCustomerButtonActionPerformed
-
-    private void updateCustomerButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateCustomerButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_updateCustomerButton1ActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
+        SalaryDAO sd = new SalaryDAO();
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ConfirmFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ConfirmFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ConfirmFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ConfirmFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            if(!sd.updateSalary(salary)) 
+                throw new PaidException("Lương của nhân viên này đã được thanh toán rồi!");
+            JOptionPane.showMessageDialog(this, "Lưu thanh toán thành công");
+            new ManagerHomeFrm(manager).setVisible(true);
+        } catch(PaidException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+            this.dispose();
+            new ManagerHomeFrm(manager).setVisible(true);
         }
-        //</editor-fold>
-        //</editor-fold>
+        
+    }//GEN-LAST:event_btnConfirmActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ConfirmFrm().setVisible(true);
-            }
-        });
-    }
+    private void btnReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReturnActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+        new DetailSalaryFrm(manager, salary).setVisible(true);
+    }//GEN-LAST:event_btnReturnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnConfirm;
+    private javax.swing.JButton btnReturn;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JButton updateCustomerButton;
-    private javax.swing.JButton updateCustomerButton1;
+    private javax.swing.JLabel lblAllowance;
+    private javax.swing.JLabel lblBonus;
+    private javax.swing.JLabel lblEmployee;
+    private javax.swing.JLabel lblInShiftSalary;
+    private javax.swing.JLabel lblLateFee;
+    private javax.swing.JLabel lblOutShiftSalary;
+    private javax.swing.JLabel lblRealSalary;
     // End of variables declaration//GEN-END:variables
 }

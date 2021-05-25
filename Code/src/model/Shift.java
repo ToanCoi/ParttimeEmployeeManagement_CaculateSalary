@@ -5,22 +5,23 @@
  */
 package model;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.sql.Time;
 
 /**
  *
  * @author nguye
  */
-public class Shift {
+public class Shift implements Serializable{
     private int id;
     private String type;
-    private Date startTime;
-    private Date endTime;
+    private Time startTime;
+    private Time endTime;
 
     public Shift() {
     }
 
-    public Shift(int id, String type, Date startTime, Date endTime) {
+    public Shift(int id, String type, Time startTime, Time endTime) {
         this.id = id;
         this.type = type;
         this.startTime = startTime;
@@ -35,11 +36,11 @@ public class Shift {
         return type;
     }
 
-    public Date getStartTime() {
+    public Time getStartTime() {
         return startTime;
     }
 
-    public Date getEndTime() {
+    public Time getEndTime() {
         return endTime;
     }
 
@@ -51,11 +52,11 @@ public class Shift {
         this.type = type;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(Time startTime) {
         this.startTime = startTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(Time endTime) {
         this.endTime = endTime;
     }
     

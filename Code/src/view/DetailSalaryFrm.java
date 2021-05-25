@@ -5,17 +5,38 @@
  */
 package view;
 
+import java.text.SimpleDateFormat;
+import javax.swing.table.DefaultTableModel;
+import model.Manager;
+import model.Salary;
+import model.WorkedShift;
+
 /**
  *
  * @author nguye
  */
 public class DetailSalaryFrm extends javax.swing.JFrame {
 
+    private Manager manager;
+    private Salary salary;
+    private DefaultTableModel model;
     /**
      * Creates new form TinhCongFrame
      */
-    public DetailSalaryFrm() {
+    public DetailSalaryFrm(Manager m, Salary s) {
         initComponents();
+        this.setLocationRelativeTo(null);
+        model = (DefaultTableModel) tblDetailSalary.getModel();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        
+        for(WorkedShift w : s.getListWorkedShift()) {
+            
+            model.addRow(new Object[]{w.getWeeksDay(), sdf.format(w.getDate()), w.getShift().getType(), w.getCheckinTime(), w.getCheckoutTime(), 
+                    w.getHourInShift(), w.getInShiftSalary(), w.getHourOutShift(), w.getOutShiftSalary(), w.getLateTime(), w.getLateFee(), w.getShiftSalary()});
+        }
+        
+        this.manager = m;
+        this.salary = s;
     }
 
     /**
@@ -33,12 +54,12 @@ public class DetailSalaryFrm extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
-        jButton7 = new javax.swing.JButton();
+        btnReturn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
-        updateCustomerButton = new javax.swing.JButton();
+        btnPaid = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblDetailSalary = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAutoRequestFocus(false);
@@ -64,15 +85,15 @@ public class DetailSalaryFrm extends javax.swing.JFrame {
         jLabel14.setForeground(new java.awt.Color(51, 204, 0));
         jLabel14.setText("Tuần này");
 
-        jButton7.setBackground(new java.awt.Color(0, 0, 153));
-        jButton7.setFont(new java.awt.Font("Tahoma", 3, 12)); // NOI18N
-        jButton7.setForeground(new java.awt.Color(51, 204, 0));
-        jButton7.setText("Trờ về");
-        jButton7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton7.setPreferredSize(new java.awt.Dimension(60, 60));
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        btnReturn.setBackground(new java.awt.Color(0, 0, 153));
+        btnReturn.setFont(new java.awt.Font("Tahoma", 3, 12)); // NOI18N
+        btnReturn.setForeground(new java.awt.Color(51, 204, 0));
+        btnReturn.setText("Trờ về");
+        btnReturn.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnReturn.setPreferredSize(new java.awt.Dimension(60, 60));
+        btnReturn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                btnReturnActionPerformed(evt);
             }
         });
 
@@ -85,16 +106,18 @@ public class DetailSalaryFrm extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(36, 36, 36)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel14)
-                                .addComponent(jLabel11))))
+                                .addComponent(jLabel11))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGap(6, 6, 6)
+                                    .addComponent(jLabel12))
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(45, 45, 45)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(37, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -110,7 +133,7 @@ public class DetailSalaryFrm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel14)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 197, Short.MAX_VALUE)
-                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(btnReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         getContentPane().add(jPanel1);
@@ -121,28 +144,24 @@ public class DetailSalaryFrm extends javax.swing.JFrame {
         jLabel13.setForeground(new java.awt.Color(0, 0, 153));
         jLabel13.setText("Hệ thống quản lý nhân viên parttime");
 
-        updateCustomerButton.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        updateCustomerButton.setForeground(new java.awt.Color(0, 0, 153));
-        updateCustomerButton.setText("Thanh toán");
-        updateCustomerButton.addActionListener(new java.awt.event.ActionListener() {
+        btnPaid.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnPaid.setForeground(new java.awt.Color(0, 0, 153));
+        btnPaid.setText("Thanh toán");
+        btnPaid.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateCustomerButtonActionPerformed(evt);
+                btnPaidActionPerformed(evt);
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblDetailSalary.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "Thứ", "Ngày", "Ca", "Giờ checkin", "Giờ checkout", "Số giờ trong ca", "Số tiền trong ca", "Số giờ ngoài ca", "Số tiền ngoài ca", "Tổng tiền phạt", "Tổng tiền thực nhận"
+                "Thứ", "Ngày", "Ca", "Giờ checkin", "Giờ checkout", "Số giờ trong ca", "Số tiền trong ca", "Số giờ ngoài ca", "Số tiền ngoài ca", "Số giờ đi chậm về sớm", "Số tiền phạt", "Tổng tiền thực nhận"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblDetailSalary);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -156,7 +175,7 @@ public class DetailSalaryFrm extends javax.swing.JFrame {
                         .addComponent(jLabel13))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(316, 316, 316)
-                        .addComponent(updateCustomerButton)))
+                        .addComponent(btnPaid)))
                 .addContainerGap(159, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -164,9 +183,9 @@ public class DetailSalaryFrm extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jLabel13)
                 .addGap(61, 61, 61)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 253, Short.MAX_VALUE)
-                .addComponent(updateCustomerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 121, Short.MAX_VALUE)
+                .addComponent(btnPaid, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(58, 58, 58))
         );
 
@@ -175,58 +194,22 @@ public class DetailSalaryFrm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    private void btnReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReturnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
+        this.dispose();
+        new SalaryFrm(manager).setVisible(true);
+        
+    }//GEN-LAST:event_btnReturnActionPerformed
 
-    private void updateCustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateCustomerButtonActionPerformed
-
-    }//GEN-LAST:event_updateCustomerButtonActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DetailSalaryFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DetailSalaryFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DetailSalaryFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DetailSalaryFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DetailSalaryFrm().setVisible(true);
-            }
-        });
-    }
+    private void btnPaidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPaidActionPerformed
+        this.dispose();
+        new ConfirmFrm(manager, salary).setVisible(true);
+        
+    }//GEN-LAST:event_btnPaidActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton7;
+    private javax.swing.JButton btnPaid;
+    private javax.swing.JButton btnReturn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -236,7 +219,6 @@ public class DetailSalaryFrm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JButton updateCustomerButton;
+    private javax.swing.JTable tblDetailSalary;
     // End of variables declaration//GEN-END:variables
 }

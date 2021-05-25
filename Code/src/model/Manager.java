@@ -6,7 +6,8 @@
 package model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.sql.Date;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,11 +16,13 @@ import java.time.LocalDate;
 public class Manager extends Employee implements Serializable{
     private String username;
     private String password;
+    private ArrayList<String> listSalary;
 
     public Manager() {
+        listSalary = new ArrayList<>();
     }
 
-    public Manager(String username, String password, int id, String name, String phoneNumber, String address, LocalDate dateOfBirth, String gender, String email) {
+    public Manager(String username, String password, int id, String name, String phoneNumber, String address, Date dateOfBirth, String gender, String email) {
         super(id, name, phoneNumber, address, dateOfBirth, gender, email);
         this.username = username;
         this.password = password;
@@ -33,6 +36,10 @@ public class Manager extends Employee implements Serializable{
         return password;
     }
 
+    public ArrayList<String> getListSalary() {
+        return listSalary;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -40,6 +47,9 @@ public class Manager extends Employee implements Serializable{
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
+    public void setListSalary(ArrayList<String> listSalary) {
+        this.listSalary = listSalary;
+    }
     
 }
