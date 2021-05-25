@@ -1,5 +1,5 @@
 # ParttimeEmployeeManagerment_CaculateSalary
-Project for Software Engineering term in my university, using java swing, mysql, junit4.
+Project for Software Engineering term in my university, using java swing, mysql, junit4 with MVC parttern
 
 
 **INTRUCTION**
